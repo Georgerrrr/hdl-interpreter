@@ -164,11 +164,24 @@ chip_t* ChipFromName(string_t Name) {
   return NULL;
 }
 
-static void PrintVariable(chip_t* Chip, variable_t* Var) {
+static void PrintVariable(chip_t* Chip, variable_t* Var, _print_fmt Format) {
   int i;
 
+  int value;
+
+  value = 0;
   for (i = 0 ; i < Var->Length ; i++) {
-    printf("%x", GetVariableValue(Chip, Var->Name, Var->Length - 1 - i));
+    value |= (GetVariableValue(Chip, Var->Name, i) << i);
+  }
+
+  if (Format == printBinary) {
+    printf("%0*b", Var->Length, value);
+  }
+  else if (Format == printHex) {
+    printf("%0*x", Var->Length >> 2, value);
+  }
+  else {
+    printf("%d", value);
   }
 }
 
@@ -189,17 +202,18 @@ void PrintVariableNames(chip_t* Chip) {
   printf("|\n");
 }
 
-void PrintVariables(chip_t* Chip) {
+void PrintVariables(chip_t* Chip, _print_fmt Format) {
   int i;
   for (i = 0 ; i < Chip->Inputs.Length ; i++) {
     printf("| ");
-    PrintVariable(Chip, &Chip->Inputs.Data[i]);
+    PrintVariable(Chip, &Chip->Inputs.Data[i], Format);
     printf(" ");
   }
 
   for (i = 0 ; i < Chip->Outputs.Length ; i++) {
     printf("| ");
-    PrintVariable(Chip, &Chip->Outputs.Data[i]);
+    PrintVariable(Chip, &Chip->Outputs.Data[i], Format);
+    printf(" ");
   }
 
   printf(" |\n");

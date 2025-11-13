@@ -59,6 +59,12 @@ typedef struct _chip {
   void (*ProcessChip)(struct _chip*);
 } chip_t;
 
+typedef enum {
+  printBinary,
+  printDecimal,
+  printHex
+} _print_fmt;
+
 extern chip_array_t Chips;
 
 void InitChips(void);
@@ -88,7 +94,7 @@ unsigned char GetVariableValue(chip_t* Chip, string_t Key, int Index);
 void SetVariableValue(chip_t* Chip, string_t Key, int Index, unsigned char Value);
 
 void PrintVariableNames(chip_t* Chip);
-void PrintVariables(chip_t* Chip);
+void PrintVariables(chip_t* Chip, _print_fmt Format);
 
 void NewChip(string_t Name, variable_array_t Inputs, variable_array_t Outputs, variable_array_t Temps, part_array_t Parts);
 
