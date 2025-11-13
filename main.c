@@ -30,6 +30,7 @@ void LoadChips(char* Buffer, int argc, char** argv) {
   Buffer = tMalloc(BUFFER_LENGTH);
   for (i = 1 ; i < argc ; i++) {
     memset(Buffer, 0, BUFFER_LENGTH);
+    printf("Building chip %s\n", argv[i]);
     f = fopen(argv[i], "r");
     TokenList = Lexer(f, Buffer, BUFFER_LENGTH);
     AppendChipBuilderArray(&ChipArray, ProcessTokens(TokenList));
@@ -39,6 +40,7 @@ void LoadChips(char* Buffer, int argc, char** argv) {
 
   tFree(Buffer);
 
+  printf("Linking chips\n");
   ResolveParts(ChipArray);
 
   CloseChipBuilderArray(&ChipArray);
