@@ -45,6 +45,7 @@ void LoadChips(char* Buffer, int argc, char** argv) {
 }
 
 chip_t* CurrentChip = NULL;
+_print_fmt PrintFormat = printDecimal;
 
 expression_t NewExpression(string_t Key, int MaxArgs, void (*Func)(string_t*, int)) {
   expression_t out;
@@ -54,6 +55,48 @@ expression_t NewExpression(string_t Key, int MaxArgs, void (*Func)(string_t*, in
   out.EvalFunc = Func;
 
   return out;
+}
+
+static int CharToHex(char c) {
+  if ('0' <= c && c <= '9') return c - 48;
+  if ('a' <= c && c <= 'f') return c - 87;
+  if ('A' <= c && c <= 'F') return c - 55;
+  return 0;
+}
+
+static int StringToValue(string_t Arg) {
+  int i, value;
+
+  value = 0;
+
+  PrintFormat = printDecimal;
+
+  i = 0;
+  if (StringStartsWith(Arg, STR("0x"))) {
+    PrintFormat = printHex;
+    i = 2;
+  }
+  else if (StringStartsWith(Arg, STR("0b"))) {
+    PrintFormat = printBinary;
+    i = 2;
+  }
+
+  for ( ; i < Arg.Length ; i++) {
+    if (PrintFormat == printBinary) {
+      value = value << 1;
+      value = value + (Arg.Data[i] - 48);
+    }
+    else if (PrintFormat == printHex) {
+      value = value << 4;
+      value = value + CharToHex(Arg.Data[i]);
+    }
+    else {
+      value = value * 10;
+      value = value + (Arg.Data[i] - 48);
+    }
+  }
+
+  return value;
 }
 
 void LoadCommand(string_t* Args, int ArgCount) {
@@ -74,7 +117,7 @@ void SetCommand(string_t* Args, int ArgCount) {
   if (ArgCount != 2) return;
 
   count = GetVariableLength(CurrentChip, Args[0]);
-  value = StringToInt(Args[1]);
+  value = StringToValue(Args[1]);
 
   for (i = 0 ; i < count ; i++) {
     SetVariableValue(CurrentChip, Args[0], i, (value >> i) & 0x1);
@@ -90,7 +133,7 @@ void EvalCommand(string_t* Args, int ArgCount) {
 void OutputCommand(string_t* Args, int ArgCount) {
   if (ArgCount != 0) return;
 
-  PrintVariables(CurrentChip); 
+  PrintVariables(CurrentChip, printDecimal); 
 }
 
 
