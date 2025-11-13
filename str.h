@@ -15,6 +15,7 @@ void InitString(string_t* NewString, string_t In);
 void InitStringLen(string_t* NewString, int Size); 
 void AppendString(string_t* String, char a); 
 int StringEquals(string_t String, string_t Other);
+int StringStartsWith(string_t String, string_t Other);
 void CloseString(string_t* String); 
 void PrintString(string_t String, string_t End); 
 int StringIsInt(string_t String);

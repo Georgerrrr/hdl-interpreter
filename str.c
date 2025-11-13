@@ -43,6 +43,23 @@ int StringEquals(string_t String, string_t Other) {
   return 1;
 }
 
+int StringStartsWith(string_t String, string_t Other) {
+  int i;
+
+  char* si;
+  const char* di;
+
+  if (String.Length < Other.Length) return 0;
+
+  si = String.Data;
+  di = Other.Data;
+  for (i = 0 ; i < Other.Length ; i++, si++, di++) {
+    if (*si != *di) return 0;
+  }
+
+  return 1;
+}
+
 void CloseString(string_t* String) {
   tFree(String->Data);
   memset(String, 0, sizeof(string_t));
