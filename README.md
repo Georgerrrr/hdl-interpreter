@@ -22,4 +22,4 @@ To run a test you must pass that in through `stdin`:
  - Make compilation errors more useful
  - Make the program fail more gracefully when it must 
  - Allow for live interpreting if no data is given through `stdin`
-
+ - Clean up project
